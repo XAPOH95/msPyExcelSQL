@@ -75,6 +75,12 @@ class ModelTest(unittest.TestCase):
                         formatted_values.append(self.fake_formats[i](values[i]))
                 return formatted_values
 
+            def delete(self, records):
+                pass
+
+            def delete_model(self, model: 'ExcelModel'):
+                self.delete(int(model.get_id()))
+
         class musiciansSheet(ModelExcelSheet_mocked):
             _controller = FakeExcelController()
             model_keys = ("id", "band_id", "name",    "musical_instrument", "vocal", "status")
@@ -104,9 +110,34 @@ class ModelTest(unittest.TestCase):
                 return Musician
 
             ### model interface implementation
-
+            def find_model_by_expression(self, columns: tuple, values: tuple):
+                keys_index = self._find_keys_indexes(columns)
+                response = self._find_by_expression(keys_index, values)
+                keys = self.model_keys
+                kvp = {keys[i]:response[i] for i in range(len(response))}
+                return self.get_link_to_model(0)(**kvp)
 
             ### excelSheet commands
+            def _find_keys_indexes(self, columns: tuple):
+                keys = list()
+                for column in columns:
+                    for key in self.model_keys:
+                        if column == key:
+                            keys.append(self.model_keys.index(column))
+                            break
+                return keys
+
+            def _find_by_expression(self, keys_index:tuple, values:tuple):
+                match = len(keys_index)
+                for record in self._controller.musicians:
+                    counter = 0
+                    for key in keys_index:
+                        if record[key] in values:
+                            counter += 1
+                    if counter == match:
+                        return record
+                raise Exception('Record not found!')
+
             def find(self, expression):
                 return self._controller.run(0)[expression]
 
@@ -152,6 +183,10 @@ class ModelTest(unittest.TestCase):
             def update(self, values:list, index:int = None):
                 index -= 1
                 self._controller.run(1)[index] = self._format_records(values)   
+
+            def delete(self, index:int):
+                index -= 1
+                del self._controller.run(1)[index]
 
             def records(self):
                 return len(self._controller.run(1))
@@ -364,3 +399,15 @@ class ModelTest(unittest.TestCase):
         self.assertTupleEqual(awaited_SamiRaatikainen[1:], SamiRaatikainen_tupled[2:])
         self.assertTupleEqual(awaited_RomainGoulon[1:], RomainGoulon_tupled[2:])
 
+    @unittest.skip('unskip to delete check that its works')
+    def test_model_can_delete_record(self):
+        band = self.bandsExcelSheet().find_model_by_id(2)
+        band.delete()
+        
+    def test_can_find_model_by_expression(self):
+        awaited = (3, 'Tom Araya', 'bass', 'lead', False)
+        band = 'slayer'
+        TomAraya = self.musicianExcelSheet().find_model_by_expression(('musical_instrument', 'vocal'), ('bass', 'lead'))
+        slayer = TomAraya.band
+        self.assertTupleEqual(awaited, tuple(dict(TomAraya).values())[1:])
+        self.assertEqual(band, str(slayer))

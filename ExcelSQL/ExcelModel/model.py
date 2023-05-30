@@ -52,6 +52,10 @@ class ExcelModel:
     def update(self):
         self._sheet.update_model(self)
 
+    def delete(self):
+        """Delete a record for model in excel file. Actually its not delete, its UPDATE the record to NULL due to excel specials."""
+        self._sheet.delete_model(self)
+
     def get_id(self):
         """returns Modeldentification object"""
         for attr in self.__dict__.values():

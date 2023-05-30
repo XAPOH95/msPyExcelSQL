@@ -8,7 +8,7 @@ class iSingleModel(iModel):
     def find_model_by_id(self, index:int):
         raise NotImplementedError
 
-    def find_model_by_expression(self, expression:str):
+    def find_model_by_expression(self, columns:tuple, values:tuple):
         raise NotImplementedError
 
     def insert_model(self, model:'ExcelModel'):
@@ -17,16 +17,23 @@ class iSingleModel(iModel):
     def update_model(self, model:'ExcelModel'):
         raise NotImplementedError
 
+    def delete_model(self, model:'ExcelModel'):
+        raise NotImplementedError
+
+
 class iModelFabric(iModel):
-    """Implementing of this interface allows to handle """
+    """Implementing of this interface allows to handle multiply models."""
     def find_models_by_id(self, index_tuple:tuple[int]):
         raise NotImplementedError
 
-    def find_models_by_expression(self, expression:str):
+    def find_models_by_expression(self, columns:tuple, values:tuple):
         raise NotImplementedError
 
     def insert_models(self, models:tuple['ExcelModel']):
         raise NotImplementedError
 
     def update_models(self, models:tuple['ExcelModel']):
+        raise NotImplementedError
+
+    def delete_models(self, models:tuple['ExcelModel']):
         raise NotImplementedError

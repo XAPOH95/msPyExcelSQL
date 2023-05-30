@@ -6,7 +6,6 @@ class BasicColumn:
         """Default column in excel sheet.
 
         Args:
-            sheet (ExcelSheet): sheet where column located
             title (str): title of column, whitespaces allowed but not welcomed.
             valuetype (_type_): link to python class of types that column containt. One of int|float|str|datetime 
         """
@@ -51,7 +50,10 @@ class BasicColumn:
 class ExcelColumn(BasicColumn):
     """Role of class is to represent a column of sheet in excel, its title and format."""
     def __init__(self, sheet: 'ExcelSheet', title: str, valuetype) -> None:
-        """Column should know to what excel sheet its belongs to. So thats why column object should be create in ExcelSheet constructor"""
+        """Column should know to what excel sheet its belongs to. So thats why column object should be create in ExcelSheet constructor
+        
+            sheet (ExcelSheet): sheet where column located
+        """
         super().__init__(title, valuetype)
         self.sheet = sheet
 
@@ -71,14 +73,13 @@ class ColumnContainer:
         return '*'
 
     def get_model_keys(self):
-        """Method returns tiple of column names with whitespaces, dots and hashsigns converted underscore.
+        """Method returns tuple of column names with whitespaces, dots and hashsigns converted to underscore.
         
-        So this keys can used and dictkey and be passed to model constructor
+        So this keys can used as dictkey and be passed to model constructor
         
         For example, columns "total cost" and "comp.inc." will be converted to
-        \t"total cost" => total_cost
-        
-        \t"comp.inc." => comp_inc_"""
+            "total cost" => total_cost\n
+            "comp.inc." => comp_inc_"""
         column:BasicColumn
         return tuple([column.to_model_keys() for column in self.columns])
 

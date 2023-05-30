@@ -375,9 +375,77 @@ class Main(unittest.TestCase):
         self.assertEqual(awaited_request, str(result_request))
         self.assertTupleEqual(awaited_params, tuple(result_params))
 
+    def test_can_delete_band(self):
+        awaited_request = "UPDATE [bands$] SET id = NULL, band = NULL, genre = NULL, origin = NULL, year_of_foundation = NULL, status = NULL WHERE id = ?"
+        awaited_params = (3, )
+
+        class bands_mockedSheet(self.BandsSheet):
+            FAKE_request = None
+            FAKE_params = None
+
+            def __str__(self) -> str:
+                return '[bands$]'
+
+            def _run_db_modification(self, request:str, params:list):
+                """Mocked
+                Original method db modif by inserting new row, mocked method sets two FAKE attrs that can be checked
+                """
+                self.FAKE_request = request
+                self.FAKE_params = tuple(params)
+
+            def get_link_to_model(self):
+                return mocked_Band
+
+        class mocked_Band(self.band):
+            def __init__(self, *args, **kwargs) -> None:
+                super().__init__(*args, **kwargs)
+                self._sheet = bands_mockedSheet()
+                
+            def check_db_modification(self):
+                return self._sheet.FAKE_request, self._sheet.FAKE_params
+
+        Slayer = bands_mockedSheet().find_model_by_id(3)
+        Slayer.delete()
+        result_request, params = Slayer.check_db_modification()
+
+        self.assertEqual(awaited_request, str(result_request))
+        self.assertTupleEqual(awaited_params, params)
+
+    def test_can_find_band_model_by_expression(self):
+        awaited_Slayer = (3, 'slayer', 'thrash metal', 'Huntington Park, California, US', 1981, False)
+        Slayer = self.BandsSheet().find_model_by_expression(('genre', 'status'), ('thrash metal', 0))
+        tupled_Slayer = tuple(dict(Slayer).values())
+        self.assertTupleEqual(awaited_Slayer, tupled_Slayer)
+
+    def test_can_find_album_model_by_expression(self):
+        awaited_GodHatesUsAll = (27, 3, 'God Hates Us All', 2001)
+        GodHatesUsAll = self.AlbumsSheet().find_model_by_expression(('discography', 'release'), ('God Hates Us All', 2001))
+        tupled_GodHatesUsAll = tuple(dict(GodHatesUsAll).values())
+        self.assertTupleEqual(awaited_GodHatesUsAll, tupled_GodHatesUsAll)
+
+    def test_can_find_musician_by_expression(self):
+        awaited_TomAraya = (12, 3, 'Tom Araya', 'bass', 'lead', False)
+        musicianSheet = self.MusiciansSheet()
+        TomAraya = musicianSheet.find_model_by_expression(
+            columns=(
+                musicianSheet.musical_instrument,
+                musicianSheet.vocal
+            ),
+            values=("bass", "lead")
+        )
+        tupled_TomAraya = tuple(dict(TomAraya).values())
+        self.assertTupleEqual(awaited_TomAraya, tupled_TomAraya)
+
     ### modification of excel file. 
     # To reset have to restore backup or copypaste values from RESERVE_SHEET
     # Or, before running test, open example.xlsx and then run tests. When tests are finished and modifications appeared, just close file without saving.
+    @unittest.skipIf(DENIED_DB_MODIFICATION, 'Mod of excel file is not allowed')
+    def test_can_delete_record_IN_EXCEL_band(self):
+        AtTheGates = self.band(2, 'at the gates', 'melodic death metal', 'Gothenburg, Sweden', 1990, 1)
+        Kreator = self.BandsSheet().find_model_by_id(4)
+        AtTheGates.delete()
+        Kreator.delete()
+    
     ### insert
     @unittest.skipIf(DENIED_DB_MODIFICATION, 'Mod of excel file is not allowed')
     def test_can_insert_TO_EXCEL_band(self):
