@@ -80,7 +80,6 @@ class ColumnContainer:
         For example, columns "total cost" and "comp.inc." will be converted to
             "total cost" => total_cost\n
             "comp.inc." => comp_inc_"""
-        column:BasicColumn
         return tuple([column.to_model_keys() for column in self.columns])
 
     def get_columns(self):
