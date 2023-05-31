@@ -3,7 +3,7 @@ This module take care about ODBC Excel dialect and let build most common request
 """
 
 from .request_mixins import SelectImplementation, UpdateImplementation, InsertImplementation, DeleteImplementation
-from ExcelSQL.ExcelSheet.excelcolumn import ExcelColumn, ColumnContainer
+from ..ExcelSheet.excelcolumn import ExcelColumn, ColumnContainer
 
 class ExcelRequest:
     _command:str

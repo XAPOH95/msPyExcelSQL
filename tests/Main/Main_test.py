@@ -3,10 +3,8 @@ import unittest
 from ExcelSQL.Main import Connection
 from ExcelSQL.Main import ExcelController
 from ExcelSQL.Main import ModelIdentification, ExcelModel
-from ExcelSQL.Main import ModelExcelSheet
+from ExcelSQL.Main import ModelSheet
 from ExcelSQL.Main import ExcelColumn, IdColumn
-
-from ExcelSQL.Main import deploy
 
 # if True skips excel inserting/updating
 DENIED_DB_MODIFICATION = True
@@ -25,7 +23,7 @@ class Main(unittest.TestCase):
             def __init__(self) -> None:
                 self.db = Connection('tests/example.xlsx')
 
-        class bandsSheet(ModelExcelSheet):
+        class bandsSheet(ModelSheet):
             def __init__(self) -> None:
                 self.idi = IdColumn(self, 'id', int)
                 self.band = ExcelColumn(self, 'band', str)
@@ -38,7 +36,7 @@ class Main(unittest.TestCase):
             def get_link_to_model(self) -> 'ExcelModel':
                 return Band
 
-        class albumsSheet(ModelExcelSheet):
+        class albumsSheet(ModelSheet):
             def __init__(self) -> None:
                 self.idi = IdColumn(self, "id", int)
                 self.band_id = ExcelColumn(self, "band_id", int)
@@ -49,7 +47,7 @@ class Main(unittest.TestCase):
             def get_link_to_model(self) -> 'ExcelModel':
                 return Album
 
-        class musiciansSheet(ModelExcelSheet):
+        class musiciansSheet(ModelSheet):
             def __init__(self) -> None:
                 self.idi = IdColumn(self, "id", int)
                 self.band_id = ExcelColumn(self, "band_id", int)
@@ -129,10 +127,6 @@ class Main(unittest.TestCase):
         ## код здесь
         end = datetime.datetime.now() - start
         print(f'Done in {end} s.')
-
-    @unittest.skip("deployed.py creation")
-    def test_can_deploy_project(self):
-        deploy()
 
     def test_can_select_band(self):
         awaited_ArchEnemy = (1, 'arch enemy', 'melodic death metal', 'Halmstad, Sweden', 1995, True)

@@ -1,4 +1,4 @@
-from ExcelSQL.ExcelRequest.excelrequest import DeleteRequest, InsertRequest, UpdateRequest, SelectRequest
+from ..ExcelRequest.excelrequest import DeleteRequest, InsertRequest, UpdateRequest, SelectRequest
 
 class iInsert:
     def insert(self):

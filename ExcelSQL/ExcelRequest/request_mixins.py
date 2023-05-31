@@ -1,4 +1,4 @@
-from ExcelSQL.ExcelSheet.excelcolumn import ExcelColumn
+from ..ExcelSheet.excelcolumn import ExcelColumn
 
 class mixinLimit:
     _limit:str = ""

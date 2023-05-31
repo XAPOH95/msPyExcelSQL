@@ -3,7 +3,7 @@ import unittest
 from ExcelSQL.ExcelModel.model import ExcelModel, iSingleModel, iModelFabric, ModelIdentification
 
 from ExcelSQL.ExcelSheet.excelcolumn import BasicColumn
-from ExcelSQL.ExcelSheet.excelsheet import ModelExcelSheet
+from ExcelSQL.ExcelSheet.modelsheet import ModelSheet
 
 class ModelTest(unittest.TestCase):
 
@@ -53,14 +53,14 @@ class ModelTest(unittest.TestCase):
                     return self.bands
                 return self.musicians
 
-        class ModelExcelSheet_mocked(ModelExcelSheet):
+        class ModelExcelSheet_mocked(ModelSheet):
             def __init__(self) -> None:
                 pass
             ### general model interface implementation
 
             ### overwritten to test
             def find_model_by_id(self, index: int) -> ExcelModel:
-                request = self.find(index - 1)
+                request = self._find(index - 1)
                 response = request
                 keys = self.model_keys
                 kvp = {keys[i]:response[i] for i in range(len(response))}
@@ -75,11 +75,11 @@ class ModelTest(unittest.TestCase):
                         formatted_values.append(self.fake_formats[i](values[i]))
                 return formatted_values
 
-            def delete(self, records):
+            def _delete(self, records):
                 pass
 
             def delete_model(self, model: 'ExcelModel'):
-                self.delete(int(model.get_id()))
+                self._delete(int(model.get_id()))
 
         class musiciansSheet(ModelExcelSheet_mocked):
             _controller = FakeExcelController()
@@ -98,7 +98,7 @@ class ModelTest(unittest.TestCase):
 
             ### test_of_ExcelModel inheritance
             def find_model_by_id(self, index:int) -> ExcelModel:
-                response = self.find(index - 1)
+                response = self._find(index - 1)
                 keys = self.model_keys
                 kvp = {keys[i]:response[i] for i in range(len(response))}
                 return self.get_link_to_model(index -1)(**kvp)
@@ -138,14 +138,14 @@ class ModelTest(unittest.TestCase):
                         return record
                 raise Exception('Record not found!')
 
-            def find(self, expression):
+            def _find(self, expression):
                 return self._controller.run(0)[expression]
 
-            def insert(self, values:list):
+            def _insert(self, values:list):
                 formatted_values = self._format_records(values)
                 self._controller.run(0).append(tuple(formatted_values))
 
-            def update(self, values:list, index:int = None):
+            def _update(self, values:list, index:int = None):
                 index -= 1
                 self._controller.run(0)[index] = self._format_records(values)           
 
@@ -171,20 +171,20 @@ class ModelTest(unittest.TestCase):
                 return Band
 
             ### excelSheet commands
-            def find(self, expression):
+            def _find(self, expression):
                 return self._controller.run(1)[expression]
 
-            def insert(self, values:tuple):
+            def _insert(self, values:tuple):
                 formatted_values = list()
                 for i in range(len(self.fake_formats)):
                     formatted_values.append(self.fake_formats[i](values[i]))
                 self._controller.run(1).append(tuple(formatted_values))
 
-            def update(self, values:list, index:int = None):
+            def _update(self, values:list, index:int = None):
                 index -= 1
                 self._controller.run(1)[index] = self._format_records(values)   
 
-            def delete(self, index:int):
+            def _delete(self, index:int):
                 index -= 1
                 del self._controller.run(1)[index]
 

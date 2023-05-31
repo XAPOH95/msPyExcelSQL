@@ -1,5 +1,5 @@
 from datetime import datetime
-from ExcelSQL.ExcelRequest.requestUtils import Agregator, Formatter, Selector
+from ..ExcelRequest.requestUtils import Agregator, Formatter, Selector
 
 class BasicColumn:
     def __init__(self, title:str, valuetype) -> None:
