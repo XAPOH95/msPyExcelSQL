@@ -1,3 +1,5 @@
+"""File for test purposes. Let dont crash imports"""
+
 from .ExcelController.connection import Connection
 from .ExcelController.excelcontroller import ExcelController
 from .ExcelModel.model import ModelIdentification, ExcelModel

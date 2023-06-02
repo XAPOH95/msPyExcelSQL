@@ -102,6 +102,32 @@ class mixinDelete:
     def _records_to_delete(self, columns:tuple):
         self._delete = ', '.join([str(column) + ' = ' + self._null for column in columns])
 
+class mixinOn:
+    _on:str = ""
+
+    def join_on(self, left:tuple, right:tuple):
+        if len(left) != len(right):
+            raise IndexError("Length of columns doesnt match!")
+
+class mixinJoin:
+    _how:str = ""
+
+    def inner(self):
+        self._how = "INNER JOIN"
+    
+    def left(self):
+        self._how = 'LEFT JOIN'
+
+    def right(self):
+        self._how = 'RIGHT JOIN'
+
+    def full(self):
+        self._how = 'FULL JOIN'
+
+class JoinImplementation(mixinOn, mixinJoin, mixinWhere):
+    """Mix of join elements"""
+    pass
+
 class SelectImplementation(mixinDistinct, mixinWhere, mixinOrderBy, mixinGroupBy, mixinHaving, mixinLimit, mixinIn, mixinLike, mixinAgregation):
     """Mix of most common SELECT specifies"""
     pass

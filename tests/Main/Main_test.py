@@ -6,6 +6,7 @@ from ExcelSQL.Main import ExcelController
 from ExcelSQL.Main import ModelIdentification, ExcelModel
 from ExcelSQL.Main import ModelSheet
 from ExcelSQL.Main import ExcelColumn, IdColumn, DatetimeColumn
+from ExcelSQL import JoinRequest
 
 # if True skips excel inserting/updating
 DENIED_DB_MODIFICATION = True
@@ -624,3 +625,90 @@ class DatetimeColumnTest(unittest.TestCase):
     def test_can_insert_TO_EXCEL_new_festival_with_datetime(self):
         TonsOfMetal = self.festival(None, 'tons of metal', 'Miami, US', '01/10/2023 16:30')
         TonsOfMetal.save()
+
+class JoinRequestExcelTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        ### NOTHING IS MOCKED!!!
+              
+        class ExampleExcelFileController(ExcelController):
+            def __init__(self) -> None:
+                self.db = Connection('tests/example.xlsx')
+
+        cls.controller = ExampleExcelFileController
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    ### Block of test methods
+
+    @unittest.skip('Performance check')
+    def test_performance(self):
+        import datetime
+        start = datetime.datetime.now()
+        ## код здесь
+        end = datetime.datetime.now() - start
+        print(f'Done in {end} s.')
+
+    def test_can_join_excel_sheets(self):
+        bands = '[bands$]'
+        musicians = '[musicians$]'
+
+        awaited_Jeff = ('arch enemy', 'melodic death metal', 'Jeff Loomis', 'guitar', 'back')
+        awaited_Michael = ('arch enemy', 'melodic death metal', 'Michael Amott', 'guitar', 'back')
+
+        request = JoinRequest(bands, musicians)
+        request.inner()
+        request.set_columns(
+            ('band', 'genre'),
+            ('name', 'musical_instrument', 'vocal')
+        )
+        request.join_on(
+            ('id',),
+            ('band_id',))
+        request.where(f'{bands}.id = ? AND {musicians}.musical_instrument = ?')
+        controller = self.controller()
+        response = controller.run_with_params(request, (1, 'guitar'))
+
+        result = tuple([tuple(i) for i in response.fetchall()])
+        result_Jeff = result[0] if 'Jeff Loomis' in result[0] else result[1]
+        result_Michael = result[0] if 'Michael Amott' in result[0] else result[1]
+
+        self.assertTupleEqual(awaited_Jeff, result_Jeff)
+        self.assertTupleEqual(awaited_Michael, result_Michael)
+
+    def test_can_hardcode_join_excel_sheets(self):
+        awaited_Jeff = ('arch enemy', 'melodic death metal', 'Jeff Loomis', 'guitar', 'back')
+        awaited_Michael = ('arch enemy', 'melodic death metal', 'Michael Amott', 'guitar', 'back')
+
+        class HardcodedRequest(JoinRequest):
+            """If structure of request doesnt change much, only some WHERE params"""
+            def __init__(self):
+                super().__init__('[bands$]', '[musicians$]')
+                self.inner()
+                self.set_columns(
+                    ('band', 'genre'),
+                    ('name', 'musical_instrument', 'vocal')
+                )
+                self.join_on(
+                    ('id',),
+                    ('band_id',))
+                self.where(f'{self._left_sheet}.id = ? AND {self._right_sheet}.musical_instrument = ?')
+
+        controller = self.controller()
+        response = controller.run_with_params(HardcodedRequest(), (1, 'guitar'))
+
+        result = tuple([tuple(i) for i in response.fetchall()])
+        result_Jeff = result[0] if 'Jeff Loomis' in result[0] else result[1]
+        result_Michael = result[0] if 'Michael Amott' in result[0] else result[1]
+
+        self.assertTupleEqual(awaited_Jeff, result_Jeff)
+        self.assertTupleEqual(awaited_Michael, result_Michael)

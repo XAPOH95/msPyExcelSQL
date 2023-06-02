@@ -34,6 +34,3 @@ class ConnectionTest(unittest.TestCase):
     def test_can_create_connection(self):
         connection = self.connection_mocked()
         self.assertIsNotNone(connection)
-
-
-        pass
