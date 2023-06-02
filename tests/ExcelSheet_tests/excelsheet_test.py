@@ -1,7 +1,9 @@
 import unittest
 from ExcelSQL.ExcelSheet.excelsheet import ExcelSheet
-from ExcelSQL.ExcelSheet.excelcolumn import ExcelColumn, ExcelColumnContainer
+from ExcelSQL.ExcelSheet.excelcolumn import ExcelColumn, ExcelColumnContainer, DatetimeColumn
 from ExcelSQL.ExcelRequest.requestUtils import Agregator
+
+from datetime import datetime
 
 class ExcelSheetTest(unittest.TestCase):
 
@@ -28,6 +30,7 @@ class ExcelSheetTest(unittest.TestCase):
                 self.c = ExcelColumn(self, 'C', str)
                 self.total_cost = ExcelColumn(self, 'total cost', float)
                 self.comp_inc = ExcelColumn(self, 'comp.inc.', float)
+                self.period = DatetimeColumn(self, 'period', '')
                 super().__init__(FakeController())
 
         cls.excelSheet_mocked = Excel_mockedSheet
@@ -57,8 +60,8 @@ class ExcelSheetTest(unittest.TestCase):
         self.assertIsNotNone(excelsheet)
 
     def test_can_convert_column_names_to_model_case(self):
-        awaited = ('A', 'B', 'C', 'total_cost', 'comp_inc_')
-        awaited_excel = 'A, B, C, [total cost], comp#inc#'
+        awaited = ('A', 'B', 'C', 'total_cost', 'comp_inc_', 'period')
+        awaited_excel = 'A, B, C, [total cost], comp#inc#, period'
         excelsheet = self.excelSheet_mocked()
         result = excelsheet.colcontainer.get_model_keys()
         result_excel = excelsheet.colcontainer.get_columns()
@@ -75,6 +78,7 @@ class ExcelSheetTest(unittest.TestCase):
         awaited = '[Excel_mocked$]'
         result = str(self.excelSheet_mocked())
         self.assertEqual(awaited, result)
+
 
 class ExcelColumnTest(unittest.TestCase):
 
@@ -111,6 +115,26 @@ class ExcelColumnTest(unittest.TestCase):
         c2 = self.excelColumn_mocked('B', str)
         c3 = self.excelColumn_mocked('C', float)
         pass
+
+    def test_can_cast_datetime_on_column(self):
+        awaited = '2023-10-25 00:00:00'
+        awaited_with_hm = '2023-10-25 19:08:00'
+
+        period = DatetimeColumn('[Sheet1]', 'period', ('%d/%m/%Y',))
+        
+        result_date = period.to_format('25/10/2023')
+
+        with self.assertRaises(ValueError):
+            period.to_format('25/10/2023 19:08')
+
+        new_period = DatetimeColumn('[Sheet1$]', 'period', ('%d/%m/%Y', '%d/%m/%Y %H:%M'))
+
+        result_with_hm = new_period.to_format('25/10/2023 19:08')
+
+        result_datetime_to_datetime = new_period.to_format(datetime.now())
+
+        self.assertEqual(awaited, str(result_date))
+        self.assertEqual(awaited_with_hm, str(result_with_hm))
 
     def test_can_str_column(self):
         awaited = 'my_regular_column'

@@ -27,6 +27,7 @@ class MyModelSheet(Main.ModelSheet):
         self.idi = Main.IdColumn(self, 'id', int)
         self.name = Main.ExcelColumn(self, 'name', str)
         self.total = Main.ExcelColumn(self, 'total_cost', float)
+        self.timestamp = Main.DatetimeColumn(self, 'time', (%d/%m/%Y, %d/%m/%Y %H:%M, %d/%m/%y))
         super().__init__(MyController())
 
     def get_link_to_model(self) -> 'Main.ExcelModel':
@@ -34,13 +35,14 @@ class MyModelSheet(Main.ModelSheet):
     """
     model = """
 class MyModel(Main.ExcelModel):
-    _alias = {'total':'total_cost'}
+    _alias = {'total':'total_cost', 'period':'time'}
 
-    def __init__(self, id:int, name:str, total_cost:float) -> None:
+    def __init__(self, id:int, name:str, total_cost:float, time) -> None:
         self._sheet = MyModelSheet()
         self.idi = Main.ModelIdentification('id', id)
         self.name = name
         self.total = total_cost
+        self.period = time
     """
     regular_sheet = """
 class MyExcelSheet(Main.ExcelSheet):

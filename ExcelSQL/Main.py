@@ -3,7 +3,7 @@ from .ExcelController.excelcontroller import ExcelController
 from .ExcelModel.model import ModelIdentification, ExcelModel
 from .ExcelSheet.excelsheet import ExcelSheet
 from .ExcelSheet.modelsheet import ModelSheet
-from .ExcelSheet.excelcolumn import ExcelColumn, IdColumn
+from .ExcelSheet.excelcolumn import ExcelColumn, IdColumn, DatetimeColumn
 
 __all__ = [
     'Connection',
@@ -13,5 +13,6 @@ __all__ = [
     'ExcelSheet',
     'ModelSheet',
     'ExcelColumn',
-    'IdColumn'
+    'IdColumn',
+    'DatetimeColumn'
 ]

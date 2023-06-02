@@ -1,4 +1,4 @@
-from .model_interfaces import iModel, iModelFabric, iSingleModel
+from .model_interfaces import iModelFabric, iSingleModel
 
 class ModelIdentification:
     """Role of class is to solve problem of model identification"""

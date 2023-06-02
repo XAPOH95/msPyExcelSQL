@@ -1,6 +1,40 @@
 class iModel:
-    def get_link_to_model(self) -> 'ExcelModel':
-        """Must return LINK (pointer) to ExcelModel class sibling"""
+    def get_model(self, *args, **kwargs) -> 'ExcelModel':
+        """
+        MUST IMPLEMENT THIS METHOD BYSELF
+        In this method *args, **kwargs should be passed in Model constructor and then return new object
+                
+        Basic implementation looks like:
+        
+        if args:
+            return MyModel(args)
+        else:
+            return MyModel(kwargs)
+
+        or if just key_value_pair is passed just
+
+        return MyModel(**key_value_pair)
+
+        Or, if your model keyword arguments doesnt match with DB columns should distribute them manually
+
+        return MyModel(
+            id = kwargs.get('identity'),
+            name = kwargs.get('some_long_name_parameter_'), # whitespace is converted to underscore and # too
+        )
+
+        type can be casted while passing args, especially time/date
+
+        period = kwargs.get('time') # "21/11/06 16:30" or None
+        if period:
+            period = datetime.strptime(period, %d/%m/%y %H:%M)
+
+        return MyModel(
+            id = int(kwargs.get('id')),
+            name = kwargs.get('name'),
+            period = period
+        )
+
+        """
         raise NotImplementedError
 
 class iSingleModel(iModel):

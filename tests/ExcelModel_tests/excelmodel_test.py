@@ -64,7 +64,7 @@ class ModelTest(unittest.TestCase):
                 response = request
                 keys = self.model_keys
                 kvp = {keys[i]:response[i] for i in range(len(response))}
-                return self.get_link_to_model()(**kvp)                
+                return self.get_model()(**kvp)                
 
             def _format_records(self, values:list):
                 formatted_values = list()
@@ -101,9 +101,9 @@ class ModelTest(unittest.TestCase):
                 response = self._find(index - 1)
                 keys = self.model_keys
                 kvp = {keys[i]:response[i] for i in range(len(response))}
-                return self.get_link_to_model(index -1)(**kvp)
+                return self.get_model(index -1)(**kvp)
             ### test_of_ExcelModel inheritance
-            def get_link_to_model(self, index:int) -> 'ExcelModel':
+            def get_model(self, index:int) -> 'ExcelModel':
                 """For example, method can return different classes"""
                 if index == 3:
                     return AlissaWhiteGluz
@@ -115,7 +115,7 @@ class ModelTest(unittest.TestCase):
                 response = self._find_by_expression(keys_index, values)
                 keys = self.model_keys
                 kvp = {keys[i]:response[i] for i in range(len(response))}
-                return self.get_link_to_model(0)(**kvp)
+                return self.get_model(0)(**kvp)
 
             ### excelSheet commands
             def _find_keys_indexes(self, columns: tuple):
@@ -167,7 +167,7 @@ class ModelTest(unittest.TestCase):
             status = BasicColumn("status", int)
 
             ### model interface implementation
-            def get_link_to_model(self):
+            def get_model(self):
                 return Band
 
             ### excelSheet commands
@@ -329,6 +329,14 @@ class ModelTest(unittest.TestCase):
         bfg_two = tuple(dict(excel.find_model_by_id(int(BFG_division.get_id()))).values())
         self.assertTupleEqual(awaited_2, bfg_two[1:])
         pass
+
+    def test_can_init_musician_from_kvp(self):
+        awaited_MickGordon = (None, 3, 'Mick Gordon', 'guitar', None, True)
+        
+        kvp = {"id":None, "band_id":3, "name":"Mick Gordon", "musical_instrument":"guitar","vocal":None,"status":True}
+        MickGordon = self.musician(**kvp)
+        tupled_MickGordon =  tuple(dict(MickGordon).values())
+        self.assertTupleEqual(awaited_MickGordon, tupled_MickGordon)
 
     def test_can_init_musician(self):
         awaited_Alissa = (4, 1, 'Alissa White-Gluz', 'violin', 'lead', 1)

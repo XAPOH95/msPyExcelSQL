@@ -20,7 +20,7 @@ class ModelSheet(BasicSheet, iSingleModel):
         request = self._prepare_select_by_id_request()
         response = self._controller.run_with_params(request, (index,)).fetchall()[0]
         kvp = {self.model_keys[i]:response[i] for i in range(len(response))}
-        return self.get_link_to_model()(**kvp)
+        return self.get_model(kvp)
 
     def find_model_by_expression(self, columns: tuple, values: tuple):
         """to create one model from expression like
@@ -28,8 +28,7 @@ class ModelSheet(BasicSheet, iSingleModel):
         request = self._prepare_select_by_expression_request(columns)
         response = self._controller.run_with_params(request, values).fetchall()[0]
         kvp = {self.model_keys[i]:response[i] for i in range(len(response))}
-        return self.get_link_to_model()(**kvp)
-
+        return self.get_model(kvp)
 
     def _prepare_select_by_expression_request(self, columns: tuple):
         request = SelectRequest(self)

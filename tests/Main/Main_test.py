@@ -1,10 +1,11 @@
 import unittest
+from datetime import datetime
 
 from ExcelSQL.Main import Connection
 from ExcelSQL.Main import ExcelController
 from ExcelSQL.Main import ModelIdentification, ExcelModel
 from ExcelSQL.Main import ModelSheet
-from ExcelSQL.Main import ExcelColumn, IdColumn
+from ExcelSQL.Main import ExcelColumn, IdColumn, DatetimeColumn
 
 # if True skips excel inserting/updating
 DENIED_DB_MODIFICATION = True
@@ -33,8 +34,15 @@ class Main(unittest.TestCase):
                 self.status = ExcelColumn(self, 'status', int)
                 super().__init__(ExampleExcelFileController())
 
-            def get_link_to_model(self) -> 'ExcelModel':
-                return Band
+            def get_model(self, kvp:dict) -> 'ExcelModel':
+                return Band(
+                    id = kvp.get('id'),
+                    band = kvp.get('band'),
+                    genre = kvp.get('genre'),
+                    origin = kvp.get('origin'),
+                    status = kvp.get('status'),
+                    year_of_foundation = kvp.get('year_of_foundation'),                    
+                )
 
         class albumsSheet(ModelSheet):
             def __init__(self) -> None:
@@ -44,8 +52,8 @@ class Main(unittest.TestCase):
                 self.release = ExcelColumn(self, "release", int)
                 super().__init__(ExampleExcelFileController())
 
-            def get_link_to_model(self) -> 'ExcelModel':
-                return Album
+            def get_model(self, kvp:dict) -> 'ExcelModel':
+                return Album(**kvp)
 
         class musiciansSheet(ModelSheet):
             def __init__(self) -> None:
@@ -57,8 +65,8 @@ class Main(unittest.TestCase):
                 self.status = ExcelColumn(self, "status", int)
                 super().__init__(ExampleExcelFileController())
 
-            def get_link_to_model(self) -> 'ExcelModel':
-                return Musician
+            def get_model(self, kvp:dict) -> 'ExcelModel':
+                return Musician(**kvp)
 
         class Band(ExcelModel):
             _alias = {'year':'year_of_foundation'}
@@ -271,8 +279,8 @@ class Main(unittest.TestCase):
                 self.FAKE_request = request
                 self.FAKE_params = tuple(params)
 
-            def get_link_to_model(self):
-                return mocked_Band
+            def get_model(self, kvp:dict):
+                return mocked_Band(**kvp)
 
         class mocked_Band(self.band):
             def __init__(self, *args, **kwargs) -> None:
@@ -310,8 +318,8 @@ class Main(unittest.TestCase):
                 self.FAKE_request = request
                 self.FAKE_params = tuple(params)
 
-            def get_link_to_model(self):
-                return mocked_Album
+            def get_model(self, kvp:dict):
+                return mocked_Album(**kvp)
 
         class mocked_Album(self.album):
             def __init__(self, *args, **kwargs) -> None:
@@ -349,8 +357,8 @@ class Main(unittest.TestCase):
                 self.FAKE_request = request
                 self.FAKE_params = tuple(params)
 
-            def get_link_to_model(self):
-                return mocked_Musician
+            def get_model(self, kvp:dict):
+                return mocked_Musician(**kvp)
 
         class mocked_Musician(self.musician):
             def __init__(self, *args, **kwargs) -> None:
@@ -387,8 +395,8 @@ class Main(unittest.TestCase):
                 self.FAKE_request = request
                 self.FAKE_params = tuple(params)
 
-            def get_link_to_model(self):
-                return mocked_Band
+            def get_model(self, kvp:dict):
+                return mocked_Band(**kvp)
 
         class mocked_Band(self.band):
             def __init__(self, *args, **kwargs) -> None:
@@ -479,3 +487,140 @@ class Main(unittest.TestCase):
         AlissaWhiteGluz = self.MusiciansSheet().find_model_by_id(4)
         AlissaWhiteGluz.instrument = 'violin'
         AlissaWhiteGluz.update()
+
+class DatetimeColumnTest(unittest.TestCase):
+    """Testcases for read/write datetime in excel formats"""
+    @classmethod
+    def setUpClass(cls):
+        ### NOTHING IS MOCKED!!!
+              
+        class ExampleExcelFileController(ExcelController):
+            def __init__(self) -> None:
+                self.db = Connection('tests/example.xlsx')
+
+        class festivalsSheet(ModelSheet):
+            def __init__(self) -> None:
+                self.identification = IdColumn(self, 'id', int)
+                self.title = ExcelColumn(self, 'title', str)
+                self.location = ExcelColumn(self, 'location', str)
+                self.period = DatetimeColumn(self, 'period', ('%d/%m/%Y', '%d/%m/%Y %H:%M'))
+                super().__init__(ExampleExcelFileController())
+
+            def get_model(self, kvp:dict) -> 'ExcelModel':
+                return Festival(**kvp)
+
+        class Festival(ExcelModel):
+            _alias = {'name':'title'}
+            def __init__(self, id:int, title:str, location:str, period) -> None:
+                self._sheet = festivalsSheet()
+                
+                self.idf = ModelIdentification('id', id)
+                self.name = title
+                self.location = location
+                self.period = period
+
+            def __str__(self) -> str:
+                return str(self.name)
+
+        cls.festivalssheet = festivalsSheet
+        cls.festival = Festival
+
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_can_read_festival(self):
+        awaited = '2023-07-31 00:00:00'
+        wacken = self.festivalssheet().find_model_by_id(1)
+        self.assertEqual(awaited, str(wacken.period))
+        self.assertIsInstance(wacken.period, datetime)
+
+    def test_can_insert_new_festival(self):
+        awaited_request = "INSERT INTO [festivals$] (id, title, location, period) VALUES (?, ?, ?, ?)"
+        awaited_params = (5, 'tons of metal', 'Miami, US', datetime(2023, 6, 1, 0, 0))
+
+        class festSheet_mocked(self.festivalssheet):
+            FAKE_request = None
+            FAKE_params = None
+
+            def __str__(self) -> str:
+                return '[festivals$]'
+
+            def _run_db_modification(self, request:str, params:list):
+                """Mocked
+                Original method db modif by inserting new row, mocked method sets two FAKE attrs that can be checked
+                """
+                self.FAKE_request = request
+                self.FAKE_params = tuple(params)
+
+            def get_model(self, kvp:dict):
+                return mocked_festival(**kvp)
+
+        class mocked_festival(self.festival):
+            def __init__(self, *args, **kwargs) -> None:
+                super().__init__(*args, **kwargs)
+                self._sheet = festSheet_mocked()
+                
+            def check_db_modification(self):
+                return self._sheet.FAKE_request, self._sheet.FAKE_params
+
+        TonsOfMetal = mocked_festival(None, 'tons of metal', 'Miami, US', '01/06/2023')
+        TonsOfMetal.save()
+        result_request, params = TonsOfMetal.check_db_modification()
+
+        self.assertEqual(awaited_request, str(result_request))
+        self.assertTupleEqual(awaited_params, params)
+
+    def test_can_update_period(self):
+        awaited_request = "UPDATE [festivals$] SET id = ?, title = ?, location = ?, period = ? WHERE id = ?"
+        awaited_params = (5, 'tons of metal', 'Miami, US', datetime(2023, 9, 1, 0, 0), 5)
+
+        class festSheet_mocked(self.festivalssheet):
+            FAKE_request = None
+            FAKE_params = None
+
+            def __str__(self) -> str:
+                return '[festivals$]'
+
+            def _run_db_modification(self, request:str, params:list):
+                """Mocked
+                Original method db modif by inserting new row, mocked method sets two FAKE attrs that can be checked
+                """
+                self.FAKE_request = request
+                self.FAKE_params = tuple(params)
+
+            def get_model(self, kvp:dict):
+                return mocked_festival(**kvp)
+
+        class mocked_festival(self.festival):
+            def __init__(self, *args, **kwargs) -> None:
+                super().__init__(*args, **kwargs)
+                self._sheet = festSheet_mocked()
+                
+            def check_db_modification(self):
+                return self._sheet.FAKE_request, self._sheet.FAKE_params
+
+        TonsOfMetal = mocked_festival(5, 'tons of metal', 'Miami, US', '01/06/2023')
+        TonsOfMetal.period = '01/09/2023'
+        TonsOfMetal.update()
+        result_request, params = TonsOfMetal.check_db_modification()
+
+        self.assertEqual(awaited_request, str(result_request))
+        self.assertTupleEqual(awaited_params, params)        
+
+    @unittest.skipIf(DENIED_DB_MODIFICATION, 'Mod of excel file is not allowed')
+    def test_can_insert_TO_EXCEL_new_festival(self):
+        TonsOfMetal = self.festival(None, 'tons of metal', 'Miami, US', '01/06/2023')
+        TonsOfMetal.save()
+
+    @unittest.skipIf(DENIED_DB_MODIFICATION, 'Mod of excel file is not allowed')
+    def test_can_insert_TO_EXCEL_new_festival_with_datetime(self):
+        TonsOfMetal = self.festival(None, 'tons of metal', 'Miami, US', '01/10/2023 16:30')
+        TonsOfMetal.save()

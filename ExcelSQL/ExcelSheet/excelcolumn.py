@@ -31,14 +31,9 @@ class BasicColumn:
 
     def to_format(self, value):
         """trying to convert given value to column type"""
-        if self.valuetype is datetime:
-            return self._to_datetimeformat(value)
-        elif value is None:
+        if value is None:
             return None
         return self.valuetype(value)
-
-    def _to_datetimeformat(self, value):
-        raise NotImplementedError
 
     def to_model_keys(self):
         symbols = (' ', '#')
@@ -56,6 +51,26 @@ class ExcelColumn(BasicColumn):
         """
         super().__init__(title, valuetype)
         self.sheet = sheet
+
+class DatetimeColumn(ExcelColumn):
+    def __init__(self, sheet: 'ExcelSheet', title: str, time_regex:tuple[str]) -> None:
+        super().__init__(sheet, title, datetime)
+        self._time_regex = time_regex
+
+    def to_format(self, value):
+        """convert value to datetime format"""
+        if isinstance(value, datetime):
+            return value
+        return self._try_to_convert(value)
+ 
+    def _try_to_convert(self, value):
+        for regex in self._time_regex:
+            try:
+                return datetime.strptime(value, regex)
+            except ValueError as ex:
+                print(ex, 'Trying next time regex')
+        raise ValueError(f"Couldn't convert {value} to any of {', '.join(self._time_regex)}")
+
 
 class IdColumn(ExcelColumn):
     """Role of class is to let excelsheet know that this column is id"""
