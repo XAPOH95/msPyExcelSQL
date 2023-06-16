@@ -1,8 +1,10 @@
 import sys
 
-def main():
+def example():
     """
-    cmd python msPyExcelSQL\\ExcelSQL\\deploy.py type_file_name
+    cmd python msPyExcelSQL example type_file_name(optional)
+    
+    creates example file (defualt deployed.py)
     """
     try:
         name = str(sys.argv[1])
@@ -14,43 +16,43 @@ class Deploy:
     """Class is used to deploy demo file for fast rewrite and go"""
     filename = 'deployed.py'
     
-    imprts = "from msPyExcelSQL.ExcelSQL import Main\n"
+    imprts = "from msPyExcelSQL import ExcelController, Connection, ModelSheet, IdColumn, ExcelColumn, DatetimeColumn, ExcelModel, ModelIdentification, ExcelSheet\n"
     
     controller = """
-class MyController(Main.ExcelController):
+class MyController(ExcelController):
     def __init__(self) -> None:
-        self.db = Main.Connection('example.xlsx')
+        self.db = Connection('example.xlsx')
     """
     modelsheet = """
-class MyModelSheet(Main.ModelSheet):
+class MyModelSheet(ModelSheet):
     def __init__(self) -> None:
-        self.idi = Main.IdColumn(self, 'id', int)
-        self.name = Main.ExcelColumn(self, 'name', str)
-        self.total = Main.ExcelColumn(self, 'total_cost', float)
-        self.timestamp = Main.DatetimeColumn(self, 'time', (%d/%m/%Y, %d/%m/%Y %H:%M, %d/%m/%y))
+        self.idi = IdColumn(self, 'id', int)
+        self.name = ExcelColumn(self, 'name', str)
+        self.total = ExcelColumn(self, 'total_cost', float)
+        self.timestamp = DatetimeColumn(self, 'time', ("%d/%m/%Y", "%d/%m/%Y %H:%M, %d/%m/%y"))
         super().__init__(MyController())
 
-    def get_link_to_model(self) -> 'Main.ExcelModel':
-        return MyModel
+    def get_model(self, kwargs:dict) -> 'ExcelModel':
+        return MyModel(**kwargs)
     """
     model = """
-class MyModel(Main.ExcelModel):
+class MyModel(ExcelModel):
     _alias = {'total':'total_cost', 'period':'time'}
 
     def __init__(self, id:int, name:str, total_cost:float, time) -> None:
         self._sheet = MyModelSheet()
-        self.idi = Main.ModelIdentification('id', id)
+        self.idi = ModelIdentification('id', id)
         self.name = name
         self.total = total_cost
         self.period = time
     """
     regular_sheet = """
-class MyExcelSheet(Main.ExcelSheet):
+class MyExcelSheet(ExcelSheet):
     def __init__(self) -> None:
-        self.position = Main.IdColumn(self, 'position', int)
-        self.title = Main.ExcelColumn(self, 'title', str)
-        self.stock = Main.ExcelColumn(self, 'stock', int)
-        self.total = Main.ExcelColumn(self, 'total_cost', float)
+        self.position = IdColumn(self, 'position', int)
+        self.title = ExcelColumn(self, 'title', str)
+        self.stock = ExcelColumn(self, 'stock', int)
+        self.total = ExcelColumn(self, 'total_cost', float)
         super().__init__(MyController())
     """
     def __init__(self, filename:str = None):
@@ -77,4 +79,4 @@ class MyExcelSheet(Main.ExcelSheet):
             file.write(self.regular_sheet)
 
 if __name__ == '__main__':
-    main()
+    example()

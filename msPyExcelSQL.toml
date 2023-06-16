@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "msPyExcelSQL"
+version = "1.0.0"
+authors = [
+  { name="Vladimir Polyakov", email="xapoh.deathsoft95@gmail.com" },
+]
+description = "Package let to treat excel file as database directly or via class entity"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Windows only",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/XAPOH95/msPyExcelSQL"
+"Bug Tracker" = "https://github.com/XAPOH95/msPyExcelSQL/issues"
+"Youtube tutorial" = "https://www.youtube.com/playlist?list=PL9wCItv8SHG97eXX76W_I0DGPzqFLJJ5D"

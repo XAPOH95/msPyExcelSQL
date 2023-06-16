@@ -6,3 +6,4 @@ from .ExcelRequest.excelJoin import JoinRequest
 from .ExcelSheet.excelcolumn import IdColumn, ExcelColumn, DatetimeColumn, ExcelColumnContainer
 from .ExcelSheet.excelsheet import ExcelSheet
 from .ExcelSheet.modelsheet import ModelSheet
+from .deploy import example
