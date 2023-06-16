@@ -5,4 +5,4 @@ from .ExcelRequest.excelrequest import DeleteRequest, InsertRequest, SelectReque
 from .ExcelRequest.excelJoin import JoinRequest
 from .ExcelSheet.excelcolumn import IdColumn, ExcelColumn, DatetimeColumn, ExcelColumnContainer
 from .ExcelSheet.excelsheet import ExcelSheet
-from .ExcelSheet.modelsheet import ExcelModel
+from .ExcelSheet.modelsheet import ModelSheet

@@ -1,5 +1,5 @@
 import unittest
-from ExcelSQL.ExcelController.excelcontroller import ExcelController
+from src.ExcelController.excelcontroller import ExcelController
 
 class ExcelControllerTest(unittest.TestCase):
 

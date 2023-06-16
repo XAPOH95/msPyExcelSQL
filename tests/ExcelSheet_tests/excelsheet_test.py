@@ -1,7 +1,7 @@
 import unittest
-from ExcelSQL.ExcelSheet.excelsheet import ExcelSheet
-from ExcelSQL.ExcelSheet.excelcolumn import ExcelColumn, ExcelColumnContainer, DatetimeColumn
-from ExcelSQL.ExcelRequest.requestUtils import Agregator
+from src.ExcelSheet.excelsheet import ExcelSheet
+from src.ExcelSheet.excelcolumn import ExcelColumn, ExcelColumnContainer, DatetimeColumn
+from src.ExcelRequest.requestUtils import Agregator
 
 from datetime import datetime
 

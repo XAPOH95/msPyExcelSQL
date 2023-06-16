@@ -1,9 +1,9 @@
 import unittest
 
-from ExcelSQL.ExcelModel.model import ExcelModel, iSingleModel, iModelFabric, ModelIdentification
+from src.ExcelModel.model import ExcelModel, iSingleModel, iModelFabric, ModelIdentification
 
-from ExcelSQL.ExcelSheet.excelcolumn import BasicColumn
-from ExcelSQL.ExcelSheet.modelsheet import ModelSheet
+from src.ExcelSheet.excelcolumn import BasicColumn
+from src.ExcelSheet.modelsheet import ModelSheet
 
 class ModelTest(unittest.TestCase):
 

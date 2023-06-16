@@ -1,6 +1,6 @@
 import unittest
 
-from ExcelSQL.ExcelRequest.excelJoin import JoinRequest
+from src.ExcelRequest.excelJoin import JoinRequest
 
 class RequestJoinTest(unittest.TestCase):
 

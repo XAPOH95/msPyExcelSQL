@@ -1,12 +1,12 @@
 import unittest
 from datetime import datetime
 
-from ExcelSQL.Main import Connection
-from ExcelSQL.Main import ExcelController
-from ExcelSQL.Main import ModelIdentification, ExcelModel
-from ExcelSQL.Main import ModelSheet
-from ExcelSQL.Main import ExcelColumn, IdColumn, DatetimeColumn
-from ExcelSQL import JoinRequest
+from src import Connection
+from src import ExcelController
+from src import ModelIdentification, ExcelModel
+from src import ModelSheet
+from src import ExcelColumn, IdColumn, DatetimeColumn
+from src import JoinRequest
 
 # if True skips excel inserting/updating
 DENIED_DB_MODIFICATION = True

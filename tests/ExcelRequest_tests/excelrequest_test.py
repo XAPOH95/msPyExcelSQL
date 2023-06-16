@@ -1,6 +1,6 @@
 import unittest
-from ExcelSQL.ExcelRequest.excelrequest import ExcelRequest, SelectRequest, UpdateRequest, InsertRequest, DeleteRequest
-from ExcelSQL.ExcelSheet.excelcolumn import ExcelColumn
+from src.ExcelRequest.excelrequest import ExcelRequest, SelectRequest, UpdateRequest, InsertRequest, DeleteRequest
+from src.ExcelSheet.excelcolumn import ExcelColumn
 
 class ExcelRequestTest(unittest.TestCase):
 

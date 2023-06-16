@@ -1,5 +1,5 @@
 import unittest
-from ExcelSQL.ExcelController.connection import Connection
+from src.ExcelController.connection import Connection
 
 class ConnectionTest(unittest.TestCase):
 
