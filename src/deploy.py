@@ -29,7 +29,7 @@ class MyModelSheet(ModelSheet):
         self.idi = IdColumn(self, 'id', int)
         self.name = ExcelColumn(self, 'name', str)
         self.total = ExcelColumn(self, 'total_cost', float)
-        self.timestamp = DatetimeColumn(self, 'time', ("%d/%m/%Y", "%d/%m/%Y %H:%M, %d/%m/%y"))
+        self.timestamp = DatetimeColumn(self, 'time', ("%d/%m/%Y", "%d/%m/%Y %H:%M", "%d/%m/%y"))
         super().__init__(MyController())
 
     def get_model(self, kwargs:dict) -> 'ExcelModel':
