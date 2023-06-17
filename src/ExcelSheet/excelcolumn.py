@@ -13,9 +13,8 @@ class BasicColumn:
         self.valuetype = valuetype
 
     def __str__(self) -> str:
-        if self.title.count(' '):
-            return f'[{self.title}]'
-        return self.title
+        """Excel like it when it squarebracketed..."""
+        return f'[{self.title}]'
 
     def __repr__(self) -> str:
         return str(self)

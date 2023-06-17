@@ -1,1 +1,1 @@
-from .src import Connection, ExcelController, ExcelModel, ModelIdentification, DeleteRequest, InsertRequest, SelectRequest, UpdateRequest, JoinRequest, IdColumn, ExcelColumn, DatetimeColumn, ExcelColumnContainer, ExcelSheet, ModelSheet, example
+from .src import Connection, ExcelController, ExcelModel, ModelIdentification, DeleteRequest, InsertRequest, SelectRequest, UpdateRequest, JoinRequest, IdColumn, ExcelColumn, DatetimeColumn, ExcelColumnContainer, ExcelSheet, ModelSheet
