@@ -169,7 +169,7 @@ class Main(unittest.TestCase):
 
     ### insert
     def test_can_insert_band(self):
-        awaited_request = 'INSERT INTO [bands$] (id, band, genre, origin, year_of_foundation, status) VALUES (?, ?, ?, ?, ?, ?)'
+        awaited_request = 'INSERT INTO [bands$] ([id], [band], [genre], [origin], [year_of_foundation], [status]) VALUES (?, ?, ?, ?, ?, ?)'
         awaited_params = (5, 'anthrax', 'thrash metal', 'New York City, US', 1981, 1)
 
         class bandsSheet(self.BandsSheet):
@@ -200,7 +200,7 @@ class Main(unittest.TestCase):
         self.assertTupleEqual(awaited_params, tuple(result_params))
 
     def test_can_insert_album(self):
-        awaited_request = 'INSERT INTO [albums$] (id, band_id, discography, release) VALUES (?, ?, ?, ?)'
+        awaited_request = 'INSERT INTO [albums$] ([id], [band_id], [discography], [release]) VALUES (?, ?, ?, ?)'
         awaited_params = (46, 1, 'Wacken 2016 life', 2016)
 
         class albumsSheet(self.AlbumsSheet):
@@ -231,7 +231,7 @@ class Main(unittest.TestCase):
         self.assertTupleEqual(awaited_params, tuple(result_params))
 
     def test_can_insert_musician(self):
-        awaited_request = 'INSERT INTO [musicians$] (id, band_id, name, musical_instrument, vocal, status) VALUES (?, ?, ?, ?, ?, ?)'
+        awaited_request = 'INSERT INTO [musicians$] ([id], [band_id], [name], [musical_instrument], [vocal], [status]) VALUES (?, ?, ?, ?, ?, ?)'
         awaited_params = (19, 1, 'Mick Gordon', 'guitar', None, 1)
 
         class musiciansSheet(self.MusiciansSheet):
@@ -263,7 +263,7 @@ class Main(unittest.TestCase):
 
     ### update
     def test_can_update_band(self):
-        awaited_request = 'UPDATE [bands$] SET id = ?, band = ?, genre = ?, origin = ?, year_of_foundation = ?, status = ? WHERE id = ?'
+        awaited_request = 'UPDATE [bands$] SET [id] = ?, [band] = ?, [genre] = ?, [origin] = ?, [year_of_foundation] = ?, [status] = ? WHERE [id] = ?'
         awaited_params = (3, 'slayer', 'speed metal', 'Huntington Park, California, US', 1981, 1, 3)
 
         class bands_mockedSheet(self.BandsSheet):
@@ -302,7 +302,7 @@ class Main(unittest.TestCase):
         self.assertTupleEqual(awaited_params, tuple(result_params))
 
     def test_can_update_album(self):
-        awaited_request = 'UPDATE [albums$] SET id = ?, band_id = ?, discography = ?, release = ? WHERE id = ?'
+        awaited_request = 'UPDATE [albums$] SET [id] = ?, [band_id] = ?, [discography] = ?, [release] = ? WHERE [id] = ?'
         awaited_params = (27, 3, 'God Hates Us All remaster', 2020, 27)
 
         class albums_mockedSheet(self.AlbumsSheet):
@@ -341,7 +341,7 @@ class Main(unittest.TestCase):
         self.assertTupleEqual(awaited_params, tuple(result_params))
 
     def test_can_update_musician(self):
-        awaited_request = 'UPDATE [musicians$] SET id = ?, band_id = ?, name = ?, musical_instrument = ?, vocal = ?, status = ? WHERE id = ?'
+        awaited_request = 'UPDATE [musicians$] SET [id] = ?, [band_id] = ?, [name] = ?, [musical_instrument] = ?, [vocal] = ?, [status] = ? WHERE [id] = ?'
         awaited_params = (4, 1, 'Alissa White-Gluz', 'violin', 'lead', 1, 4)
 
         class musicians_mockedSheet(self.MusiciansSheet):
@@ -379,7 +379,7 @@ class Main(unittest.TestCase):
         self.assertTupleEqual(awaited_params, tuple(result_params))
 
     def test_can_delete_band(self):
-        awaited_request = "UPDATE [bands$] SET id = NULL, band = NULL, genre = NULL, origin = NULL, year_of_foundation = NULL, status = NULL WHERE id = ?"
+        awaited_request = "UPDATE [bands$] SET [id] = NULL, [band] = NULL, [genre] = NULL, [origin] = NULL, [year_of_foundation] = NULL, [status] = NULL WHERE [id] = ?"
         awaited_params = (3, )
 
         class bands_mockedSheet(self.BandsSheet):
@@ -544,7 +544,7 @@ class DatetimeColumnTest(unittest.TestCase):
         self.assertIsInstance(wacken.period, datetime)
 
     def test_can_insert_new_festival(self):
-        awaited_request = "INSERT INTO [festivals$] (id, title, location, period) VALUES (?, ?, ?, ?)"
+        awaited_request = "INSERT INTO [festivals$] ([id], [title], [location], [period]) VALUES (?, ?, ?, ?)"
         awaited_params = (5, 'tons of metal', 'Miami, US', datetime(2023, 6, 1, 0, 0))
 
         class festSheet_mocked(self.festivalssheet):
@@ -580,7 +580,7 @@ class DatetimeColumnTest(unittest.TestCase):
         self.assertTupleEqual(awaited_params, params)
 
     def test_can_update_period(self):
-        awaited_request = "UPDATE [festivals$] SET id = ?, title = ?, location = ?, period = ? WHERE id = ?"
+        awaited_request = "UPDATE [festivals$] SET [id] = ?, [title] = ?, [location] = ?, [period] = ? WHERE [id] = ?"
         awaited_params = (5, 'tons of metal', 'Miami, US', datetime(2023, 9, 1, 0, 0), 5)
 
         class festSheet_mocked(self.festivalssheet):

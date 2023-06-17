@@ -19,6 +19,9 @@ Q: To use excel file as a database? It's a joke! I have MySQL, Postgre, MongoDB 
 A: Excel spreadsheet is a most common data transfer "joke" in companies worldwide. Most of bussiness stuff going on excel spreadsheets, especially analyses and reports.
 Does your SQLite have spreadsheet features?
 
+Q: What about performance?
+A: On ryzen7 4800h and nvme ssd author got 1280 records (4 values: int, string, datetime and random float) inserted each second. If do same with open excelfile, unf, its drops to 20 records each second. Searching of random id (int) among 1_048_576 records took about 0.01~0.02s
+
 Q: Why just dont use pandas.read_excel()?<br>
 A: I tried it but on heavy files like 60MB pandas will read them around 5-6 minutes and in debug mode this time is trippled. So odbc driver is only way.
 

@@ -65,16 +65,16 @@ class ExcelRequestTest(unittest.TestCase):
 
     def test_select_sql_request_to_excel_workbook(self):
         awaited_select_all = "SELECT * FROM [Sheet1$]"
-        awaited_select_few = "SELECT id, [total value] FROM [Sheet1$]"
-        awaited_select_few_where = "SELECT id, [total value] FROM [Sheet1$] WHERE id = ?"
-        awaited_between = "SELECT id FROM [Sheet1$] WHERE id BETWEEN ? AND ?"
-        awaited_group_by = "SELECT name, COUNT(*) FROM [Sheet1$] GROUP BY name"
-        awaited_group_by_having = "SELECT name, COUNT(*) FROM [Sheet1$] GROUP BY name HAVING COUNT(*) > ?"
-        awaited_like = "SELECT name FROM [Sheet1$] WHERE name LIKE ?"
-        awaited_distinct = "SELECT DISTINCT name FROM [Sheet1$]"
+        awaited_select_few = "SELECT [id], [total value] FROM [Sheet1$]"
+        awaited_select_few_where = "SELECT [id], [total value] FROM [Sheet1$] WHERE [id] = ?"
+        awaited_between = "SELECT [id] FROM [Sheet1$] WHERE [id] BETWEEN ? AND ?"
+        awaited_group_by = "SELECT [name], COUNT(*) FROM [Sheet1$] GROUP BY [name]"
+        awaited_group_by_having = "SELECT [name], COUNT(*) FROM [Sheet1$] GROUP BY [name] HAVING COUNT(*) > ?"
+        awaited_like = "SELECT [name] FROM [Sheet1$] WHERE [name] LIKE ?"
+        awaited_distinct = "SELECT DISTINCT [name] FROM [Sheet1$]"
         awaited_limit = "SELECT * FROM [Sheet1$] LIMIT 10"
         awaited_or = "SELECT * FROM [Sheet1$] WHERE ? OR ?"
-        awaited_in = 'SELECT * FROM [Sheet1$] WHERE id IN (value1, value2)'
+        awaited_in = 'SELECT * FROM [Sheet1$] WHERE [id] IN (value1, value2)'
 
         columnsTuple = (ExcelColumn('Sheet1$', 'id', int),
                 ExcelColumn('Sheet1$', 'total value', float),
@@ -129,7 +129,7 @@ class ExcelRequestTest(unittest.TestCase):
         self.assertEqual(awaited_in, str(request))
 
     def test_update_sql_request_to_excel_workbook(self):
-        awaited = "UPDATE [Sheet1$] SET id = ?, [total value] = ?, name = ? WHERE id = ?"
+        awaited = "UPDATE [Sheet1$] SET [id] = ?, [total value] = ?, [name] = ? WHERE [id] = ?"
 
         columnsTuple = (ExcelColumn('Sheet1$', 'id', int),
                 ExcelColumn('Sheet1$', 'total value', float),
@@ -141,7 +141,7 @@ class ExcelRequestTest(unittest.TestCase):
         self.assertEqual(awaited, str(update))
 
     def test_insert_sql_request_to_excel_workbook(self):
-        awaited_some_columns = 'INSERT INTO [Sheet1$] (id, [total value]) VALUES (?, ?)'
+        awaited_some_columns = 'INSERT INTO [Sheet1$] ([id], [total value]) VALUES (?, ?)'
         awaited_all = 'INSERT INTO [Sheet1$] VALUES (?, ?, ?)'
 
         columnsTuple = (ExcelColumn('Sheet1$', 'id', int),
@@ -162,7 +162,7 @@ class ExcelRequestTest(unittest.TestCase):
 
 
     def test_delete_sql_request_to_excel_workbook(self):
-        awaited = "UPDATE [Sheet1$] SET id = NULL, [total value] = NULL, name = NULL WHERE id = ?"
+        awaited = "UPDATE [Sheet1$] SET [id] = NULL, [total value] = NULL, [name] = NULL WHERE [id] = ?"
 
         columnsTuple = (ExcelColumn('Sheet1$', 'id', int),
                 ExcelColumn('Sheet1$', 'total value', float),

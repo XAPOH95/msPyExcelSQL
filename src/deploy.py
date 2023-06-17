@@ -74,9 +74,16 @@ class MyExcelSheet(ExcelSheet):
     """
     final = """
 def insert_model():
-    model = MyModel(None, "yes its works!", 3.1415, "1/1/1990")
-    model.save()
+    import random
+    import datetime
+
+    for i in range(30):
+        model = MyModel(None, "yes its works!", random.randint(1, 10)/10, datetime.datetime.now())
+        model.save()
     # should appear in example.xlsx on MyModel sheet
+
+    # on ryzen7 4800H and nvme m.2 pcie3.0 ssd odbc driver inserted 1280 rows with 4 random values each second
+    # if excel file is open only 20 records has been inserted each second
 
 def read_model():
     model = MyModelSheet().find_model_by_id(1)
@@ -117,6 +124,7 @@ if __name__ == "__main__":
             file.write(self.modelsheet)
             file.write(self.model)
             file.write(self.regular_sheet)
+            file.write(self.final)
 
 if __name__ == '__main__':
     example()

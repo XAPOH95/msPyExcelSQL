@@ -61,7 +61,7 @@ class ExcelSheetTest(unittest.TestCase):
 
     def test_can_convert_column_names_to_model_case(self):
         awaited = ('A', 'B', 'C', 'total_cost', 'comp_inc_', 'period')
-        awaited_excel = 'A, B, C, [total cost], comp#inc#, period'
+        awaited_excel = '[A], [B], [C], [total cost], [comp#inc#], [period]'
         excelsheet = self.excelSheet_mocked()
         result = excelsheet.colcontainer.get_model_keys()
         result_excel = excelsheet.colcontainer.get_columns()
@@ -137,9 +137,9 @@ class ExcelColumnTest(unittest.TestCase):
         self.assertEqual(awaited_with_hm, str(result_with_hm))
 
     def test_can_str_column(self):
-        awaited = 'my_regular_column'
+        awaited = '[my_regular_column]'
         awaited_with_ws = '[my wrecked column]'
-        awaited_with_dot = 'm#wr#col#'
+        awaited_with_dot = '[m#wr#col#]'
         awaited_with_ws_and_dot = '[m# wr# col#]'
 
         result = self.excelColumn_mocked('my_regular_column', str)
@@ -185,11 +185,11 @@ class AgregatorTest(unittest.TestCase):
     def test_can_init_agregator(self):
         col = 'my_cool_column'
 
-        awaited_COUNT = f"COUNT({col})"
-        awaited_SUM = f"SUM({col})"
-        awaited_AVG = f"AVG({col})"
-        awaited_MIN = f"MIN({col})"
-        awaited_MAX = f"MAX({col})"
+        awaited_COUNT = f"COUNT([{col}])"
+        awaited_SUM = f"SUM([{col}])"
+        awaited_AVG = f"AVG([{col}])"
+        awaited_MIN = f"MIN([{col}])"
+        awaited_MAX = f"MAX([{col}])"
 
         ec = ExcelColumn('Sheet$', col, float)
         agr = self.agregator_mocked(ec)
@@ -256,7 +256,7 @@ class ExcelColumnContainerTest(unittest.TestCase):
         pass
 
     def test_can_get_columns_and_pug_from_excelsheet(self):
-        awaited_columns = 'id, title, total, [total value of something]'
+        awaited_columns = '[id], [title], [total], [total value of something]'
         awaited_pug = '(?, ?, ?, ?)'
         container = self.excelColumnContainer_mocked(self.ExcelSheet)
         cols = container.get_columns()
