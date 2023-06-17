@@ -13,6 +13,8 @@ For example, you have class Band and sheet "bands" in excel file. So this module
 
 For better understanding check tests/Main
 
+For quick stack use command
+python -m msPyExcelSQL.deploy FILE_NAME_HERE (default just deployed.py)
 
 # FAQ
 Q: To use excel file as a database? It's a joke! I have MySQL, Postgre, MongoDB or SQLite3. Why do I need this crutches?<br>
