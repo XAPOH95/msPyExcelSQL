@@ -57,7 +57,7 @@ class ExcelSheet(BasicSheet, Commands):
         return request
 
     def run(self, request, params:tuple = None):
-        if params is None:
+        if params is not None:
             if isinstance(params, tuple):
                 return self._controller.run_with_params(str(request), params)
             raise ValueError("params should be tuple!")

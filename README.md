@@ -11,17 +11,16 @@ Purpose of this module is to provide instrument for python to treat excel (.xlsx
 
 For example, you have class Band and sheet "bands" in excel file. So this module let you create instances of Band from "bands" records or create new instance, setup it and save to "bands". Ofc this class can be inherit and get own behavior or tuf bussiness logic.
 
-For better understanding check tests/Main
-
 For quick stack use command
 python -m msPyExcelSQL.deploy FILE_NAME_HERE (default just deployed.py)
 
+For better understanding check tests/Main on project's github
 # FAQ
 Q: To use excel file as a database? It's a joke! I have MySQL, Postgre, MongoDB or SQLite3. Why do I need this crutches?<br>
 A: Excel spreadsheet is a most common data transfer "joke" in companies worldwide. Most of bussiness stuff going on excel spreadsheets, especially analyses and reports.
 Does your SQLite have spreadsheet features?
 
-Q: What about performance?
+Q: What about performance?<br>
 A: On ryzen7 4800h and nvme ssd author got 1280 records (4 values: int, string, datetime and random float) inserted each second. If do same with open excelfile, unf, its drops to 20 records each second. Searching of random id (int) among 1_048_576 records took about 0.01~0.02s
 
 Q: Why just dont use pandas.read_excel()?<br>
